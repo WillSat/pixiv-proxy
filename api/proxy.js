@@ -1,7 +1,4 @@
-// api/proxy.js (Vercel Serverless Function)
-import fetch from 'node-fetch';
-
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     const targetUrl = req.query.url;
     if (!targetUrl) {
@@ -15,18 +12,16 @@ export default async function handler(req, res) {
       'Accept':
         'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.5',
       'Referer': 'https://www.pixiv.net/',
-      'Cookie': 'PHPSESSID=110137795_euqvdXVCucAW9r4lQXggsmMZkVntkxN7;',
     };
 
     const response = await fetch(targetUrl, { headers });
 
-    // 检查 content-type 是否是图片
     const contentType = response.headers.get('content-type') || '';
     if (!contentType.startsWith('image/')) {
       return res.status(404).send('Target URL is not an image');
     }
 
-    const buffer = await response.arrayBuffer();
+    const arrayBuffer = await response.arrayBuffer();
 
     // 设置必要头部
     res.setHeader('Content-Type', contentType);
@@ -35,9 +30,9 @@ export default async function handler(req, res) {
     const cacheControl = response.headers.get('cache-control');
     if (cacheControl) res.setHeader('Cache-Control', cacheControl);
 
-    return res.status(response.status).send(Buffer.from(buffer));
+    res.status(200).send(Buffer.from(arrayBuffer));
   } catch (err) {
     console.error(err);
-    return res.status(500).send('Error fetching target URL: ' + err.message);
+    res.status(500).send('Error fetching target URL: ' + err.message);
   }
-}
+};
