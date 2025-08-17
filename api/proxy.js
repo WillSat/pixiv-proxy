@@ -15,8 +15,7 @@ export default async function handler(req, res) {
       'Accept':
         'image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.5',
       'Referer': 'https://www.pixiv.net/',
-      // 需要 PHPSESSID 可以加
-      // 'Cookie': 'PHPSESSID=xxxx;',
+      'Cookie': 'PHPSESSID=110137795_euqvdXVCucAW9r4lQXggsmMZkVntkxN7;',
     };
 
     const response = await fetch(targetUrl, { headers });
